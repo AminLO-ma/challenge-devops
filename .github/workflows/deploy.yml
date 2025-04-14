@@ -52,24 +52,20 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
         
-      # Docker Hub authentication
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: aminloma
-          # In a real scenario, you would use a secret:
-          # password: ${{ secrets.DOCKERHUB_TOKEN }}
-          # For this example, we're using a placeholder that will need to be replaced
-          password: "YOUR_DOCKERHUB_TOKEN"
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
           
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
           context: ./backend
-          push: ${{ github.event_name == 'push' }}
+          push: true
           tags: |
             aminloma/quiz-backend:latest
-            aminloma/quiz-backend:${{ github.ref_name }}
+            aminloma/quiz-backend:${{ env.BRANCH_NAME }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
@@ -77,12 +73,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
-          push: ${{ github.event_name == 'push' }}
+          push: true
           tags: |
             aminloma/quiz-frontend:latest
-            aminloma/quiz-frontend:${{ github.ref_name }}
-          build-args: |
-            NODE_ENV=production
-            CI=false
+            aminloma/quiz-frontend:${{ env.BRANCH_NAME }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
