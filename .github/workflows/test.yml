@@ -33,6 +33,6 @@ jobs:
       working-directory: ./backend
       run: npm test
       
-    - name: Generate coverage report
-      working-directory: ./backend
-      run: npm run test:coverage
+    # - name: Generate coverage report
+    #   working-directory: ./backend
+    #   run: npm run test:coverage
