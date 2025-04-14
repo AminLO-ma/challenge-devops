@@ -15,7 +15,7 @@ yarn-error.log*
 /build
 /dist
 
-# Coverage directory used by tools like istanbul
+# Coverage directory
 coverage/
 
 # IDE - VSCode
@@ -35,3 +35,21 @@ logs
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Frontend specific
+frontend/.env
+frontend/.eslintcache
+frontend/coverage
+
+# Backend specific
+backend/.env
+backend/.eslintcache
+backend/coverage
+
+# Database files
+*.sqlite
+*.db
+
+# Temporary files
+*.tmp
+*.temp
