@@ -3,19 +3,7 @@ const quizController = require('../../src/controllers/quizController');
 const sequelize = require('../../src/config/db');
 
 // Mock the database and models
-jest.mock('../../src/config/db', () => {
-  const mockSequelize = {
-    transaction: jest.fn(() => Promise.resolve({
-      commit: jest.fn().mockResolvedValue(true),
-      rollback: jest.fn().mockResolvedValue(true)
-    }))
-  };
-  
-  return {
-    sequelize: mockSequelize,
-    connectDB: jest.fn()
-  };
-});
+jest.mock('../../src/config/db', () => require('../mocks/db.mock'));
 
 // Mock the sequelize models
 jest.mock('../../src/models/Quiz', () => {
@@ -61,11 +49,6 @@ jest.mock('../../src/models/Quiz', () => {
     Option: OptionMock
   };
 });
-
-// Mock Express validator
-jest.mock('express-validator', () => ({
-  validationResult: jest.fn(() => ({ isEmpty: () => true }))
-}));
 
 // Mock Express request and response
 const mockRequest = (data = {}) => {
@@ -113,7 +96,6 @@ describe('Quiz Controller', () => {
     });
 
     it('should return 400 if question options are invalid', async () => {
-      // Arrange
       const req = mockRequest({
         body: {
           title: 'Test Quiz',
@@ -121,7 +103,7 @@ describe('Quiz Controller', () => {
           questions: [
             {
               text: 'Question 1',
-              options: ['Only one option'] // Invalid - needs at least 2 options
+              options: [{ text: 'Only one option', isCorrect: true }] // Invalid - needs at least 2 options
             },
             {
               text: 'Question 2',
@@ -140,14 +122,14 @@ describe('Quiz Controller', () => {
           ]
         }
       });
-      const res = mockResponse();
       
-      // Act
+      const res = mockResponse();
+
       await quizController.createQuiz(req, res);
       
-      // Assert
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+        success: false,
         error: expect.stringContaining('Question 1 must have at least 2 options')
       }));
     });
@@ -342,3 +324,46 @@ describe('Quiz Controller', () => {
     });
   });
 });
+
+exports.createQuiz = async (req, res) => {
+  // Start a transaction for data consistency
+  const t = await sequelize.transaction();
+
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { title, theme, questions } = req.body;
+
+    if (questions.length < 3 || questions.length > 10) {
+      return res.status(400).json({
+        success: false,
+        error: 'Quiz must contain between 3 and 10 questions'
+      });
+    }
+
+    const quiz = await Quiz.create({ title, theme }, { transaction: t });
+
+    for (const question of questions) {
+      const createdQuestion = await Question.create(
+        { text: question.text, quizId: quiz.id },
+        { transaction: t }
+      );
+
+      for (const option of question.options) {
+        await Option.create(
+          { text: option.text, isCorrect: option.isCorrect, questionId: createdQuestion.id },
+          { transaction: t }
+        );
+      }
+    }
+
+    await t.commit();
+    res.status(201).json({ success: true, data: quiz });
+  } catch (error) {
+    await t.rollback();
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+};
