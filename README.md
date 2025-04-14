@@ -18,10 +18,61 @@ Une application web de quiz en ligne permettant de créer et répondre à des qu
 
 ##  Comment définiriez-vous le DevOps ?
 
+# Questions Théoriques – DevOps
+
+##  Comment définiriez-vous le DevOps ?
+
 Le DevOps est une démarche / philosophie, qui peut être définie et réalisée de plusieurs manières selon le contexte, les projets et les technologies de l'entreprise.  
 Cette démarche peut être très bénéfique dans le processus de développement et de déploiement, car elle permet aux développeurs de ne plus se soucier des erreurs liées au code, d'avoir une meilleure clarté dans *"qui a fait quoi"*.  
 Du côté des personnes chargées de l’infrastructure, elles peuvent collaborer de manière beaucoup plus directe avec les développeurs.  
 Cela leur permet une rapidité de mise en production, et ça simplifie leur travail de configuration, notamment avec Docker et Docker Compose.
+
+---
+
+##  Qu’impose le DevOps ?
+
+Le DevOps impose trois choses principales :  
+
+- L’utilisation d’**outils pertinents** pour le bon fonctionnement de la démarche, à la fois dans le projet et à l’échelle de l’entreprise.  
+  Par exemple, **Docker** est l’un des outils principaux pour la mise en production, grâce à la **containerisation**.
+
+- Pour tout ce qui touche au **versioning**, des outils comme **GitHub** ou **GitLab** sont largement utilisés.  
+  GitHub Actions permet notamment d’automatiser la mise en production avec des pipelines **CI/CD**.
+
+- Enfin, ce qui me semble le plus important : **les tests**.  
+  Qu’il s’agisse de tests unitaires, fonctionnels, ou d’intégration, ils sont imposés dans une démarche DevOps car ils permettent de valider la qualité du code.  
+  Ça permet de **pousser son code sereinement**, à condition de bien couvrir les différents cas, y compris ceux censés échouer.  
+  Bien sûr, cela dépend toujours du contexte du projet.
+
+---
+
+##  Quels sont les inconvénients ou les faiblesses du DevOps ?
+
+Il y a certaines limitations du DevOps, notamment selon le type d’application développée.  
+Par exemple, les **applications desktop** n’ont pas forcément besoin d’une mise à jour régulière, donc l’intérêt du DevOps est plus limité.  
+En revanche, pour les **applications web**, c’est clairement plus avantageux.
+
+Pour les **applications mobiles**, j’ai déjà vu des cas où les mises à jour sont automatiques, et d’autres où elles sont manuelles — donc je ne connais pas encore toutes les contraintes spécifiques dans ce domaine.
+
+Par ailleurs, avec **Docker** comme outil principal de mise en prod, une entreprise peut être limitée si elle doit gérer une orchestration de conteneurs avec **Kubernetes**.  
+Cela demande des ressources matérielles, mais aussi humaines — il faut maîtriser les outils d’orchestration.
+
+Enfin, Docker ne permet pas une **scalabilité optimale du stockage**, donc certaines **bases de données ne peuvent pas être containerisées** efficacement à grande échelle.
+
+---
+
+##  Quel est votre avis sur le DevOps ?
+
+Je trouve que le DevOps est quelque chose d’essentiel, qui **fluidifie le processus de développement** et **assure une bonne qualité de code**, un bon suivi, et une certaine **sérénité dans le travail d’équipe**.  
+Mais cela reste vrai **à condition que ce soit bien utilisé** et qu’on ne le détourne pas de son objectif principal.  
+Cela dit, il y a encore certaines limites aujourd’hui.
+
+---
+
+##  Quels sont les tests primordiaux pour toute application ?
+
+Les **tests unitaires**, les **tests d’intégration**, les **tests fonctionnels** et les **tests de sécurités** sont, pour moi, les plus importants.
+
 
 ## Structure du projet
 
