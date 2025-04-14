@@ -5,12 +5,23 @@ Une application web de quiz en ligne permettant de créer et répondre à des qu
 ## Table des matières
 
 - [Structure du projet](#structure-du-projet)
+- [Questions Théoriques – DevOps](#questions-théoriques-devops)
 - [Configuration Docker](#configuration-docker)
   - [Dockerfile Backend](#dockerfile-backend)
   - [Dockerfile Frontend](#dockerfile-frontend)
   - [Docker Compose](#docker-compose)
 - [CI/CD avec GitHub Actions](#cicd-avec-github-actions)
 - [Instructions d'exécution](#instructions-dexécution)
+
+
+# Questions Théoriques – DevOps
+
+##  Comment définiriez-vous le DevOps ?
+
+Le DevOps est une démarche / philosophie, qui peut être définie et réalisée de plusieurs manières selon le contexte, les projets et les technologies de l'entreprise.  
+Cette démarche peut être très bénéfique dans le processus de développement et de déploiement, car elle permet aux développeurs de ne plus se soucier des erreurs liées au code, d'avoir une meilleure clarté dans *"qui a fait quoi"*.  
+Du côté des personnes chargées de l’infrastructure, elles peuvent collaborer de manière beaucoup plus directe avec les développeurs.  
+Cela leur permet une rapidité de mise en production, et ça simplifie leur travail de configuration, notamment avec Docker et Docker Compose.
 
 ## Structure du projet
 
