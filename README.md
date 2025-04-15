@@ -343,3 +343,43 @@ Pour reconstruire les images après des modifications :
    ```bash
    docker-compose up --build -d
    ```
+
+---
+
+## Déploiement en production avec Docker Hub
+
+Grâce à la CI/CD (GitHub Actions), les images Docker du backend et du frontend sont automatiquement construites et poussées sur Docker Hub à chaque push sur `main` ou `dev`.
+
+- **Backend** : [`aminloma/quiz-backend`](https://hub.docker.com/r/aminloma/quiz-backend)
+- **Frontend** : [`aminloma/quiz-frontend`](https://hub.docker.com/r/aminloma/quiz-frontend)
+
+### Récupérer et lancer les images en production
+
+Sur votre serveur de production, vous pouvez directement utiliser les images publiées sur Docker Hub :
+
+```bash
+# Backend
+sudo docker pull aminloma/quiz-backend:latest
+sudo docker run -d --name quiz-backend -p 5000:5000 \
+  --env-file /chemin/vers/.env \
+  aminloma/quiz-backend:latest
+
+# Frontend
+sudo docker pull aminloma/quiz-frontend:latest
+sudo docker run -d --name quiz-frontend -p 80:80 \
+  aminloma/quiz-frontend:latest
+```
+
+> **Remarque :** Adaptez les variables d'environnement et les ports selon vos besoins. Pour une stack complète (avec base de données, etc.), privilégiez `docker-compose` ou un orchestrateur.
+
+### Mise à jour
+
+Pour mettre à jour votre application en production :
+```bash
+sudo docker pull aminloma/quiz-backend:latest
+sudo docker pull aminloma/quiz-frontend:latest
+sudo docker restart quiz-backend
+sudo docker restart quiz-frontend
+```
+
+---
