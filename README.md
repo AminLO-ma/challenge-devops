@@ -71,9 +71,9 @@ Les **tests unitaires**, les **tests d’intégration**, les **tests fonctionnel
 ---
 ---
 
-### 📌 Remarque sur l’état d’avancement
+### Remarque sur l’état d’avancement
 
-Je me suis volontairement arrêté au **point 4 de la feuille de route**, c’est-à-dire à la **mise en production sur DockerHub**, afin de consacrer le temps nécessaire à bien structurer le projet et à mettre en place une démarche **DevOps cohérente et de qualité** dès les premières étapes.
+Je me suis arrêté au **point 4 de la feuille de route**, c’est-à-dire à la **mise en production sur DockerHub**, afin de consacrer le temps nécessaire à bien structurer le projet et à mettre en place une démarche **DevOps cohérente et de qualité** dès les premières étapes.
 
 L’objectif était de garantir une base technique **propre**, **automatisée** et **facilement maintenable**, avant de passer aux étapes suivantes comme la gestion des utilisateurs ou l’interface frontend.
 
