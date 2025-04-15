@@ -13,11 +13,6 @@ Une application web de quiz en ligne permettant de créer et répondre à des qu
 - [CI/CD avec GitHub Actions](#cicd-avec-github-actions)
 - [Instructions d'exécution](#instructions-dexécution)
 
-
-# Questions Théoriques – DevOps
-
-##  Comment définiriez-vous le DevOps ?
-
 # Questions Théoriques – DevOps
 
 ##  Comment définiriez-vous le DevOps ?
