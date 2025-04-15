@@ -68,6 +68,22 @@ Cela dit, il y a encore certaines limites aujourd’hui.
 
 Les **tests unitaires**, les **tests d’intégration**, les **tests fonctionnels** et les **tests de sécurités** sont, pour moi, les plus importants.
 
+---
+---
+
+### 📌 Remarque sur l’état d’avancement
+
+Je me suis volontairement arrêté au **point 4 de la feuille de route**, c’est-à-dire à la **mise en production sur DockerHub**, afin de consacrer le temps nécessaire à bien structurer le projet et à mettre en place une démarche **DevOps cohérente et de qualité** dès les premières étapes.
+
+L’objectif était de garantir une base technique **propre**, **automatisée** et **facilement maintenable**, avant de passer aux étapes suivantes comme la gestion des utilisateurs ou l’interface frontend.
+
+Cela m’a permis d’appliquer les bonnes pratiques DevOps :
+- Conteneurisation avec **Docker**,
+- Configuration de **Docker Compose**,
+- Automatisation **CI/CD** avec **GitHub Actions**,
+- Et les **premiers tests backend**.
+
+Cette rigueur initiale facilitera grandement les évolutions futures du projet.
 
 ## Structure du projet
 
