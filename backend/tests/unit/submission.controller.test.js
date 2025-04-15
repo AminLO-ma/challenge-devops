@@ -109,11 +109,105 @@ const mockResponse = () => {
 
 // Unit tests for Submission Controller
 describe('Submission Controller', () => {
+  // Original mock implementations
+  const originalQuizFindByPk = Quiz.findByPk;
+  const originalQuizSubmissionCreate = QuizSubmission.create;
+  const originalQuizSubmissionFindAll = QuizSubmission.findAll;
+  
+  beforeEach(() => {
+    // Reset to default mock implementations for each test
+    Quiz.findByPk = originalQuizFindByPk;
+    QuizSubmission.create = originalQuizSubmissionCreate;
+    QuizSubmission.findAll = originalQuizSubmissionFindAll;
+  });
+  
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe('submitQuizAnswers', () => {
+    it('should return 500 when an unexpected error occurs during submission', async () => {
+      // Arrange
+      const req = mockRequest({
+        params: { id: 1 },
+        body: {
+          answers: [
+            { questionId: 1, selectedOptionId: 2 },
+            { questionId: 2, selectedOptionId: 4 },
+            { questionId: 3, selectedOptionId: 7 }
+          ]
+        }
+      });
+      const res = mockResponse();
+      
+      // Save original implementations
+      const db = require('../../src/config/db');
+      const originalTransaction = db.sequelize.transaction;
+      const originalFindByPk = Quiz.findByPk;
+      const originalQuizSubmissionCreate = QuizSubmission.create;
+      
+      // Mock transaction
+      const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
+      db.sequelize.transaction = jest.fn().mockResolvedValue(mockTransaction);
+      
+      // Mock quiz found with questions and options
+      Quiz.findByPk = jest.fn().mockResolvedValue({
+        id: 1,
+        title: 'Test Quiz',
+        theme: 'Testing',
+        Questions: [
+          {
+            id: 1,
+            text: 'Question 1',
+            Options: [
+              { id: 1, text: 'Option 1', isCorrect: true },
+              { id: 2, text: 'Option 2', isCorrect: false }
+            ]
+          },
+          {
+            id: 2,
+            text: 'Question 2',
+            Options: [
+              { id: 3, text: 'Option 1', isCorrect: false },
+              { id: 4, text: 'Option 2', isCorrect: true }
+            ]
+          },
+          {
+            id: 3,
+            text: 'Question 3',
+            Options: [
+              { id: 5, text: 'Option 1', isCorrect: false },
+              { id: 6, text: 'Option 2', isCorrect: false },
+              { id: 7, text: 'Option 3', isCorrect: true }
+            ]
+          }
+        ]
+      });
+      
+      // Simulate an error during submission creation
+      QuizSubmission.create = jest.fn().mockImplementation(() => {
+        throw new Error('Database connection failed');
+      });
+
+      try {
+        // Act
+        await submissionController.submitQuizAnswers(req, res);
+
+        // Assert
+        expect(mockTransaction.rollback).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+          success: false,
+          error: 'Server Error'
+        }));
+      } finally {
+        // Restore original implementations
+        db.sequelize.transaction = originalTransaction;
+        Quiz.findByPk = originalFindByPk;
+        QuizSubmission.create = originalQuizSubmissionCreate;
+      }
+    });
+    
     it('should return 404 if quiz does not exist', async () => {
       // Arrange
       const req = mockRequest({
@@ -215,12 +309,18 @@ describe('Submission Controller', () => {
       });
       const res = mockResponse();
       
+      // Save original implementations
+      const db = require('../../src/config/db');
+      const originalTransaction = db.sequelize.transaction;
+      const originalFindByPk = Quiz.findByPk;
+      const originalQuizSubmissionCreate = QuizSubmission.create;
+      
       // Mock transaction
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
-      require('../../src/config/db').sequelize.transaction = jest.fn().mockResolvedValue(mockTransaction);
+      db.sequelize.transaction = jest.fn().mockResolvedValue(mockTransaction);
       
       // Mock quiz found
-      Quiz.findByPk.mockResolvedValue({
+      Quiz.findByPk = jest.fn().mockResolvedValue({
         id: 1,
         title: 'Test Quiz',
         theme: 'Testing',
@@ -255,17 +355,23 @@ describe('Submission Controller', () => {
         ]
       });
 
-      // Act
-      await submissionController.submitQuizAnswers(req, res);
+      try {
+        // Act
+        await submissionController.submitQuizAnswers(req, res);
 
-      // Assert
-      expect(QuizSubmission.create).toHaveBeenCalled();
-      expect(mockTransaction.rollback).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-        success: false,
-        error: expect.stringContaining('Each answer must include questionId and selectedOptionId')
-      }));
+        // Assert
+        expect(QuizSubmission.create).toHaveBeenCalled();
+        expect(mockTransaction.rollback).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+          success: false,
+          error: expect.stringContaining('Each answer must include questionId and selectedOptionId')
+        }));
+      } finally {
+        // Restore original implementations
+        db.sequelize.transaction = originalTransaction;
+        Quiz.findByPk = originalFindByPk;
+      }
     });
 
     it('should calculate score correctly based on submitted answers', async () => {
@@ -365,6 +471,37 @@ describe('Submission Controller', () => {
   });
 
   describe('getQuizSubmissions', () => {
+    it('should return 500 when an unexpected error occurs during fetching submissions', async () => {
+      // Arrange
+      const req = mockRequest({
+        params: { id: 1 }
+      });
+      const res = mockResponse();
+      
+      // Save original implementation
+      const originalFindAll = QuizSubmission.findAll;
+      
+      // Simulate a database error
+      QuizSubmission.findAll = jest.fn().mockImplementation(() => {
+        throw new Error('Database connection error');
+      });
+
+      try {
+        // Act
+        await submissionController.getQuizSubmissions(req, res);
+
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+          success: false,
+          error: 'Server Error'
+        }));
+      } finally {
+        // Restore original implementation
+        QuizSubmission.findAll = originalFindAll;
+      }
+    });
+    
     it('should return all submissions for a quiz', async () => {
       // Arrange
       const req = mockRequest({

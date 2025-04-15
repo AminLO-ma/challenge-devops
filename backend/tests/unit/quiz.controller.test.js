@@ -68,11 +68,13 @@ const mockResponse = () => {
 
 // Unit tests for Quiz Controller
 describe('Quiz Controller', () => {
+  
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe('createQuiz', () => {
+    
     it('should return 400 if questions array is invalid', async () => {
       // Arrange
       const req = mockRequest({
@@ -237,6 +239,7 @@ describe('Quiz Controller', () => {
   });
 
   describe('getQuizzes', () => {
+    
     it('should return an empty array when no quizzes exist', async () => {
       // Arrange
       const req = mockRequest();
